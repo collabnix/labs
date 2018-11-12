@@ -1,0 +1,41 @@
+version: "3"
+ 
+services:
+  web_server1:
+    image: httpd:2.4
+ 
+  web_server2:
+    image: httpd:2.4
+ 
+  mysql:
+    image: mysql:5.6
+    volumes:
+     - db_data:/var/lib/mysql:cached
+    restart: always
+    ports:
+     - "3307:3306"
+ 
+  s3:
+    image: atlassianlabs/localstack
+    container_name: s3
+    ports:
+     - "5000:5000"
+    volumes:
+     - s3_data:/tmp/s3/data
+    environment:
+     - DATA_DIR=/tmp/s3/data
+      - SERVICES=s3:5000
+      - DEFAULT_REGION=ap-southeast-1
+      - HOSTNAME=s3
+    restart: on-failure
+#    networks:
+#      backend:
+#        aliases:
+#          - biztory.s3
+ 
+#networks:
+#  backend:
+ 
+volumes:
+  db_data:
+ s3_data:
